@@ -1,0 +1,26 @@
+/* minimal reset */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* page styles */
+body {
+    background: #ddd;
+    font-family: sans-serif;
+}
+
+
+#container {
+    width: 800px;
+    margin: 1em auto;
+}
+
+#container > * {
+    float: left;
+}
+
+#scratchpad {
+    background: #eee;
+    box-shadow: 0 0 20px #ccc;
+}

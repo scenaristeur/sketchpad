@@ -4,6 +4,8 @@
     var oldPos = {};
 
     ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
     ctx.strokeStyle = '#000';
 
     function eventToXY(e) {

@@ -1,13 +1,40 @@
-(function(canvas, socket) {
+(function(canvas, socket, sizeToolbar, colorToolbar) {
     var ctx = canvas.getContext('2d');
 
     var oldPos = {};
 
-    var size = 5;
-    var color = '#000';
+    var size = 4;
+    var color = '#222';
 
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
+
+    // populate the toolbars
+    for (var i=1; i<10; i++) {
+        var lineSize = Math.round(i*2);
+        var el = document.createElement('button');
+        el.innerHTML = lineSize;
+        el.dataset.size = lineSize;
+        el.addEventListener('click', function() {
+            size = this.dataset.size;
+        });
+        sizeToolbar.appendChild(el);
+    }
+
+    var colors = [];
+    for (var i=0; i<10; i++) {
+        colors.push('hsl('+(36*i-6)+', 93%, 47%)');
+    }
+    colors.push('#eee', '#222');
+    for (var i=0; i<colors.length; i++) {
+        var el = document.createElement('button');
+        el.dataset.color = colors[i];
+        el.style.background = colors[i];
+        el.addEventListener('click', function() {
+            color = this.dataset.color;
+        });
+        colorToolbar.appendChild(el);
+    }
 
     function eventToXY(e) {
         return {
@@ -59,4 +86,4 @@
         line(data.start, data.end, data.size, data.color);
     });
 
-})(document.getElementById('scratchpad'), io());
+})(document.getElementById('scratchpad'), io(), document.getElementById('size-toolbar'), document.getElementById('color-toolbar'));

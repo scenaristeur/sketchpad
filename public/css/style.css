@@ -10,6 +10,14 @@ body {
     font-family: sans-serif;
 }
 
+button {
+    border: none;
+    background: #aaa;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    margin-right: 5px;
+}
 
 #container {
     width: 800px;

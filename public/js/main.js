@@ -1,62 +1,49 @@
 (function(canvas, socket) {
     var ctx = canvas.getContext('2d');
 
+    var oldPos = {};
+
     ctx.lineWidth = 5;
     ctx.strokeStyle = '#000';
 
     function eventToXY(e) {
-        return [e.offsetX || e.layerX, e.offsetY || e.layerY];
+        return {
+            x: e.offsetX || e.layerX,
+            y: e.offsetY || e.layerY
+        };
     }
 
-    function start(x, y) {
+    function line(start, end) {
         ctx.beginPath();
-        ctx.moveTo(x, y);
-    }
-
-    function move(x, y) {
-        ctx.lineTo(x, y);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
         ctx.stroke();
-    }
-
-    function finish() {
         ctx.closePath();
     }
 
     function onMouseMove(e) {
-        var xy = eventToXY(e);
-        socket.emit('move', xy);
-        move.apply(move, xy);
+        var newPos = eventToXY(e);
+        socket.emit('line', {start: oldPos, end: newPos});
+        line(oldPos, newPos);
+        oldPos = newPos;
     };
 
     canvas.addEventListener('mousedown', function(e) {
-        var xy = eventToXY(e);
-        var x = xy[0];
-        var y = xy[1];
-
         if (e.which == 1) {
-            socket.emit('start', xy);
-            start.apply(start, xy);
+            oldPos = eventToXY(e);
             canvas.addEventListener('mousemove', onMouseMove);
         }
     });
 
     canvas.addEventListener('mouseup', function(e) {
         if (e.which == 1) {
-            finish();
-            socket.emit('finish');
             canvas.removeEventListener('mousemove', onMouseMove);
         }
     });
 
     // remote events
-    socket.on('start', function(data) {
-        start.apply(start, data);
-    });
-    socket.on('move', function(data) {
-        move.apply(move, data);
-    });
-    socket.on('finish', function(data) {
-        finish();
+    socket.on('line', function(data) {
+        line(data.start, data.end);
     });
 
 })(document.getElementById('scratchpad'), io());

@@ -13,14 +13,8 @@ app.set('port', (process.env.PORT || 3000));
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function(socket) {
-    socket.on('start', function(data) {
-        socket.broadcast.emit('start', data);
-    });
-    socket.on('move', function(data) {
-        socket.broadcast.emit('move', data);
-    });
-    socket.on('finish', function(data) {
-        socket.broadcast.emit('finish', data);
+    socket.on('line', function(data) {
+        socket.broadcast.emit('line', data);
     });
 });
 

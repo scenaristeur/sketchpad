@@ -3,10 +3,11 @@
 
     var oldPos = {};
 
-    ctx.lineWidth = 5;
+    var size = 5;
+    var color = '#000';
+
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = '#000';
 
     function eventToXY(e) {
         return {
@@ -15,18 +16,28 @@
         };
     }
 
-    function line(start, end) {
+    function line(start, end, size, color) {
+        var oldSize = ctx.lineWidth;
+        var oldColor = ctx.fillStyle;
+
+        ctx.lineWidth = size;
+        ctx.strokeStyle = color;
+
         ctx.beginPath();
         ctx.moveTo(start.x, start.y);
         ctx.lineTo(end.x, end.y);
         ctx.stroke();
         ctx.closePath();
+
+        ctx.lineWidth = oldSize;
+        ctx.strokeStyle = oldColor;
     }
 
     function onMouseMove(e) {
         var newPos = eventToXY(e);
-        socket.emit('line', {start: oldPos, end: newPos});
-        line(oldPos, newPos);
+        var data = {start: oldPos, end: newPos, size: size, color: color};
+        socket.emit('line', data);
+        line(oldPos, newPos, size, color);
         oldPos = newPos;
     };
 
@@ -45,7 +56,7 @@
 
     // remote events
     socket.on('line', function(data) {
-        line(data.start, data.end);
+        line(data.start, data.end, data.size, data.color);
     });
 
 })(document.getElementById('scratchpad'), io());

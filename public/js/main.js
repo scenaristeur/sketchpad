@@ -1,4 +1,4 @@
-(function(canvas, socket, sizeToolbar, colorToolbar) {
+(function(canvas, socket, sizeToolbar, colorToolbar, counter) {
     var ctx = canvas.getContext('2d');
 
     var oldPos = {};
@@ -86,4 +86,8 @@
         line(data.start, data.end, data.size, data.color);
     });
 
-})(document.getElementById('scratchpad'), io(), document.getElementById('size-toolbar'), document.getElementById('color-toolbar'));
+    socket.on('num_clients', function(data) {
+        counter.innerHTML = data;
+    });
+
+})(document.getElementById('scratchpad'), io(), document.getElementById('size-toolbar'), document.getElementById('color-toolbar'), document.getElementById('counter'));

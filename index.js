@@ -12,9 +12,17 @@ app.set('port', (process.env.PORT || 3000));
 // route to static files
 app.use(express.static(__dirname + '/public'));
 
+var num_clients = 0;
+
 io.on('connection', function(socket) {
+    io.emit('num_clients', ++num_clients);
+
     socket.on('line', function(data) {
         socket.broadcast.emit('line', data);
+    });
+
+    socket.on('disconnect', function(data) {
+        io.emit('num_clients', --num_clients);
     });
 });
 

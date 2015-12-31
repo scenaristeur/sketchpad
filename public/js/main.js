@@ -61,25 +61,27 @@
     }
 
     function onMouseMove(e) {
-        var newPos = eventToXY(e);
-        var data = {start: oldPos, end: newPos, size: size, color: color};
-        socket.emit('line', data);
-        line(oldPos, newPos, size, color);
-        oldPos = newPos;
+        if (e.buttons & 1) {
+            var newPos = eventToXY(e);
+            var data = {start: oldPos, end: newPos, size: size, color: color};
+            socket.emit('line', data);
+            line(oldPos, newPos, size, color);
+            oldPos = newPos;
+        }
     };
 
     canvas.addEventListener('mousedown', function(e) {
         if (e.which == 1) {
             oldPos = eventToXY(e);
-            canvas.addEventListener('mousemove', onMouseMove);
+            onMouseMove(e); // draw a single point
         }
     });
 
-    canvas.addEventListener('mouseup', function(e) {
-        if (e.which == 1) {
-            canvas.removeEventListener('mousemove', onMouseMove);
-        }
+    canvas.addEventListener('mouseout', function(e) {
+        oldPos = {};
     });
+
+    canvas.addEventListener('mousemove', onMouseMove);
 
     // remote events
     socket.on('line', function(data) {

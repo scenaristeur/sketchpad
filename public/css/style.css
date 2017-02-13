@@ -27,6 +27,7 @@ button {
 #scratchpad {
     background: #eee;
     box-shadow: 0 0 20px #ccc;
+    cursor: default;
 }
 
 #footer {

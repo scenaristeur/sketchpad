@@ -10,6 +10,18 @@ body {
     font-family: sans-serif;
 }
 
+@media screen and (max-height: 650px) {
+    #size-toolbar {
+        display: none;
+    }
+}
+
+@media screen and (max-height: 600px) {
+    #color-toolbar {
+        display: none;
+    }
+}
+
 button {
     border: none;
     background: #aaa;

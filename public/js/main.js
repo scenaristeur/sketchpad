@@ -38,8 +38,8 @@
 
     function eventToXY(e) {
         return {
-            x: e.offsetX || e.layerX,
-            y: e.offsetY || e.layerY
+            x: e.offsetX || e.layerX || e.clientX - canvas.offsetLeft,
+            y: e.offsetY || e.layerY || e.clientY - canvas.offsetTop
         };
     }
 
@@ -60,28 +60,53 @@
         ctx.strokeStyle = oldColor;
     }
 
-    function onMouseMove(e) {
-        if (e.buttons & 1) {
-            var newPos = eventToXY(e);
-            var data = {start: oldPos, end: newPos, size: size, color: color};
-            socket.emit('line', data);
-            line(oldPos, newPos, size, color);
-            oldPos = newPos;
-        }
+    function handleStart(e) {
+        oldPos = eventToXY(e);
+        handleMove(e); // draw a single point
+    }
+
+    function handleMove(e) {
+        var newPos = eventToXY(e);
+        var data = {start: oldPos, end: newPos, size: size, color: color};
+        socket.emit('line', data);
+        line(oldPos, newPos, size, color);
+        oldPos = newPos;
     };
+
+    function handleEnd(e) {
+        oldPos = {};
+    }
 
     canvas.addEventListener('mousedown', function(e) {
         if (e.which == 1) {
-            oldPos = eventToXY(e);
-            onMouseMove(e); // draw a single point
+            handleStart(e);
         }
     });
 
-    canvas.addEventListener('mouseout', function(e) {
-        oldPos = {};
+    canvas.addEventListener('mousemove', function(e) {
+        if (e.buttons & 1) {
+            handleMove(e);
+        }
     });
 
-    canvas.addEventListener('mousemove', onMouseMove);
+    canvas.addEventListener('mouseout', handleEnd);
+
+    canvas.addEventListener('touchstart', function(e) {
+        var touches = e.touches;
+        if (touches.length == 1) {
+            handleStart(touches[0]);
+        }
+    });
+
+    canvas.addEventListener('touchmove', function(e) {
+        var touches = e.touches;
+        if (touches.length == 1) {
+            console.log(eventToXY(touches[0]));
+            handleMove(touches[0]);
+        }
+    });
+
+    canvas.addEventListener('touchend', handleEnd);
 
     // remote events
     socket.on('line', function(data) {

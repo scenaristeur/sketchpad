@@ -13,9 +13,8 @@ node .
 
 ```
 
-/////////////////////////////////////////
-// Lancement du serveur sketchpad au démarrage de la carte SmagYun
-//////////////////////////////////////////
+# Lancement du serveur sketchpad au démarrage de la carte SmagYun
+
 créer un fichier de démarrage et rendez-le executable:
 ```
 

@@ -8,7 +8,7 @@ var server = http.Server(app);
 var io = socketio(server);
 
 // set port from the environment or fall back
-app.set('port', (process.env.PORT || 3000));
+app.set('port', (process.env.PORT || 3010));
 // route to static files
 app.use(express.static(__dirname + '/public'));
 

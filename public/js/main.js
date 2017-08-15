@@ -84,6 +84,7 @@
     });
 
     canvas.addEventListener('mousemove', function(e) {
+      e.preventDefault();
         if (e.buttons & 1) {
             handleMove(e);
         }
@@ -99,6 +100,7 @@
     });
 
     canvas.addEventListener('touchmove', function(e) {
+      e.preventDefault();
         var touches = e.touches;
         if (touches.length == 1) {
             console.log(eventToXY(touches[0]));

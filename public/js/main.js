@@ -8,6 +8,8 @@
 
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // populate the toolbars
     for (var i=1; i<10; i++) {
@@ -103,7 +105,7 @@
       e.preventDefault();
         var touches = e.touches;
         if (touches.length == 1) {
-            console.log(eventToXY(touches[0]));
+          //  console.log(eventToXY(touches[0]));
             handleMove(touches[0]);
         }
     });
@@ -118,5 +120,23 @@
     socket.on('num_clients', function(data) {
         counter.innerHTML = data;
     });
+
+    // download
+    const download = document.getElementById('download');
+    const rand = i=>Math.random()*i<<0;
+    const fileName = `image${100+rand(100)}.png`;
+
+        function onClickAnchor(e) {
+          canvas.style.backgroundColor = 'rgba(158, 167, 184)';
+      if (window.navigator.msSaveBlob) {
+        window.navigator.msSaveBlob(canvas.msToBlob(), fileName);
+        e.preventDefault();
+      } else {
+        download.setAttribute('download', fileName);
+        download.setAttribute('href', canvas.toDataURL());
+      }
+    }
+
+    download.addEventListener('click', onClickAnchor);
 
 })(document.getElementById('scratchpad'), io(), document.getElementById('size-toolbar'), document.getElementById('color-toolbar'), document.getElementById('counter'));
